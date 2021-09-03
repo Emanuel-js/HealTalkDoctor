@@ -42,7 +42,7 @@ class _Login_Page_AdminState extends State<Login_Page_Admin> {
                             context,
                             MaterialPageRoute(
                                 builder: (BuildContext context) =>
-                                    Login_Page()));
+                                    LoginPage()));
                       },
                     ),
                   ],

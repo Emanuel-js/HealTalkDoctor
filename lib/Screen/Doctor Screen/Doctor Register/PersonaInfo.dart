@@ -4,21 +4,28 @@ import 'package:gender_picker/source/enums.dart';
 import 'package:heal_talk_doctor/index.dart';
 import 'package:date_field/date_field.dart';
 import 'package:gender_picker/gender_picker.dart';
+import 'package:path/path.dart';
 
-class personal_info extends StatefulWidget {
+class PersonalInfo extends StatefulWidget {
   @override
-  _personal_infoState createState() => _personal_infoState();
+  _PersonalInfoState createState() => _PersonalInfoState();
 }
 
-class _personal_infoState extends State<personal_info> {
-  File _image;
-
-  final ageController = TextEditingController();
+class _PersonalInfoState extends State<PersonalInfo> {
+  final nameTitel = TextEditingController();
   final addressController = TextEditingController();
   final phoneControler = TextEditingController();
   String gender = "Male";
-  DateTime selectedDate;
+  File _image;
 
+  String title = "Add";
+  @override
+  void initState() {
+    super.initState();
+    title = "Add";
+  }
+
+  DateTime dob;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -47,7 +54,16 @@ class _personal_infoState extends State<personal_info> {
                 SizedBox(
                   height: 20,
                 ),
-
+                BuildText(
+                  controller: nameTitel,
+                  label: "Name Title eg. DR",
+                  onPress: () {},
+                  ispassword: false,
+                  isvisble: false,
+                ),
+                SizedBox(
+                  height: 20,
+                ),
                 SizedBox(
                   height: 20,
                 ),
@@ -84,10 +100,10 @@ class _personal_infoState extends State<personal_info> {
                       decoration: const InputDecoration(
                         hintText: 'DOB',
                       ),
-                      selectedDate: selectedDate,
+                      selectedDate: dob,
                       onDateSelected: (DateTime value) {
                         setState(() {
-                          selectedDate = value;
+                          dob = value;
                         });
                       }),
                 ),
@@ -103,56 +119,46 @@ class _personal_infoState extends State<personal_info> {
                 SizedBox(
                   height: 20,
                 ),
+                _image?.exists() != null || _image != null
+                    ? CircleAvatar(
+                        maxRadius: 60,
+                        backgroundImage: FileImage(_image),
+                      )
+                    : Text("Inset profile"),
+
+                SizedBox(
+                  height: 20,
+                ),
                 Container(
-                  padding: EdgeInsets.all(10),
-                  width: MediaQuery.of(context).size.width * 0.8,
-                  height: MediaQuery.of(context).size.height * 0.3,
+                  // width: MediaQuery.of(context).size.width * 0.8,
+                  // height: MediaQuery.of(context).size.height * 0.3,
                   color: colors.white,
-                  child: Stack(
-                    children: [
-                      Align(
-                        alignment: Alignment.topCenter,
-                        child: Text(
-                          'Profile Picture',
-                          style: body2(),
-                        ),
-                      ),
-                      Align(
-                        alignment: Alignment.center,
-                        child: _image != null
-                            ? Container(
-                                height: 100,
-                                width: 200,
-                                decoration: BoxDecoration(
-                                    image: DecorationImage(
-                                        image: FileImage(_image))),
-                              )
-                            : Text("uploade your photo"),
-                      ),
-                      Align(
-                        alignment: Alignment.bottomCenter,
-                        child: btnCustom(
-                          // width: MediaQuery.of(context).size.width * 0.5,
-                          text: 'Upload',
-                          color: colors.secondarypurpleColor,
-                          textcolor: colors.white,
-                          onpress: () {
-                            setState(() async {
-                              File img = await getImgFromGullery(_image);
-                              _image = File(img.path);
-                              // print(_image);
-                            });
-                          },
-                        ),
-                      ),
-                    ],
+                  child: Align(
+                    // alignment: Alignment.bottomCenter,
+                    child: Button1(
+                      // width: MediaQuery.of(context).size.width * 0.5,
+                      text: 'profile Image',
+                      color: colors.secondarypurpleColor,
+                      onpress: () {
+                        setState(() async {
+                          File img = await getImgFromGullery(_image);
+                          _image = File(img.path);
+
+                          DisplayMsg().displayMessage(
+                              context: context, msg: "Image is Uploaded!");
+                        });
+                      },
+                    ),
                   ),
+                ),
+                SizedBox(
+                  height: 20,
                 ),
                 btnCustom(
                   width: MediaQuery.of(context).size.width * 0.6,
-                  text: "Next",
+                  text: title,
                   onpress: () {
-                    Navigator.push(context, createRoute(EducationalInfo()));
+                    doctorInputValidetor(context);
                   },
                   textcolor: colors.white,
                   color: colors.primarygreenColor,
@@ -163,6 +169,39 @@ class _personal_infoState extends State<personal_info> {
         ),
       ),
     );
+  }
+
+  doctorInputValidetor(context) async {
+    if (addressController.text.isEmpty ||
+        phoneControler.text.isEmpty ||
+        nameTitel.text.isEmpty) {
+      DisplayMsg()
+          .displayMessage(msg: "Please Enter required info", context: context);
+    } else if (dob == null) {
+      DisplayMsg().displayMessage(msg: "Invalid DOB", context: context);
+    } else if (_image == null) {
+      DisplayMsg()
+          .displayMessage(msg: "profile is required!", context: context);
+    } else {
+      String fileName = basename(_image.path);
+
+      FirebaseApi().uploadFile(_image);
+      String imgUrl = await FirebaseApi().downloadFile(fileName);
+      if (imgUrl != null) {
+        setState(() {
+          title = "Next";
+        });
+        FirebaseApi().updatePersonalInfo(
+            gender,
+            dob,
+            imgUrl,
+            addressController.text.trim(),
+            phoneControler.text.trim(),
+            nameTitel.text.trim());
+        PageDataApi().updatePageInfo(1, false, false);
+        Navigator.pushReplacement(context, createRoute(EducationalInfo()));
+      }
+    }
   }
 
   Widget genderpik() {

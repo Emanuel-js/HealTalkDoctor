@@ -10,9 +10,8 @@ class AuthControlle {
       await _auth.createUserWithEmailAndPassword(
           email: email, password: password);
 
-      // FirebaseApi().addPatient(_auth.currentUser.uid, firstName, lastName,
-      //     email, gender, false, null, age);
-
+      FirebaseApi().addDoctor(email, fullName, _auth.currentUser.uid);
+      PageDataApi().addPageInfo();
       return true;
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
@@ -33,35 +32,34 @@ class AuthControlle {
   // void emailVar(BuildContext context) async {
   //   User u = FirebaseAuth.instance.currentUser;
 
-  //   if (u.emailVerified) {
+  //   if (u.emailVerified ) {
   //     Navigator.pushReplacement(context, createRoute(HomeScreen1()));
   //   }
   // }
 
-  // Future login<bool>(
-  //   String email,
-  //   String password,
-  //   BuildContext context,
-  // ) async {
-  //   try {
-  //     await _auth.signInWithEmailAndPassword(email: email, password: password);
-  //     return true;
-  //   } on FirebaseAuthException catch (e) {
-  //     if (e.code == 'user-not-found') {
-  //       DisplayMsg().displayMessage(
-  //           msg: 'No user found for that email.', context: context);
-  //       return false;
-  //     } else if (e.code == 'wrong-password') {
-  //       DisplayMsg().displayMessage(
-  //           msg: 'Wrong password provided for that user.', context: context);
-  //       return false;
-  //     }
-  //   }
-  // }
+  Future login<bool>(
+    String email,
+    String password,
+    BuildContext context,
+  ) async {
+    try {
+      await _auth.signInWithEmailAndPassword(email: email, password: password);
+      return true;
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'user-not-found') {
+        DisplayMsg().displayMessage(
+            msg: 'No user found for that email.', context: context);
+        return false;
+      } else if (e.code == 'wrong-password') {
+        DisplayMsg().displayMessage(
+            msg: 'Wrong password provided for that user.', context: context);
+        return false;
+      }
+    }
+  }
 
   Future logout<User>() async {
     _auth.signOut();
-    print("user is loged out");
   }
 
   // bool changePassword(String currentPassword, String newPassword, context) {

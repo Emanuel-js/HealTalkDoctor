@@ -75,7 +75,7 @@ class _mainpageState extends State<mainpage> {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (BuildContext context) => Login_Page()));
+                              builder: (BuildContext context) => LoginPage()));
                     },
                     color: colors.secondarypurpleColor,
                   ),

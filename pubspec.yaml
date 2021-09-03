@@ -29,7 +29,7 @@ dependencies:
   date_field: ^2.0.1
   gender_picker: ^1.1.0  
   smart_select: ^4.3.2
-
+  provider: ^6.0.0
 
 
 

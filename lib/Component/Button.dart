@@ -115,3 +115,32 @@ class floating_action_button extends StatelessWidget {
     );
   }
 }
+
+class Button1 extends StatelessWidget {
+  final colors = Appcolor();
+  Button1({this.color, this.text, this.onpress});
+  final color;
+  final text;
+  final onpress;
+
+  ///
+  @override
+  Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+    return RaisedButton(
+      padding: EdgeInsets.symmetric(
+          vertical: size.height * 0.02, horizontal: size.width * 0.1),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(Radius.circular(15.2)),
+      ),
+      onPressed: () {
+        onpress();
+      },
+      color: color,
+      child: Text(
+        text,
+        style: TextStyle(color: colors.white),
+      ),
+    );
+  }
+}

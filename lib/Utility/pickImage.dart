@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:image_picker/image_picker.dart';
 
-Future getImgFromGullery(File _image) async {
+getImgFromGullery(File _image) async {
   final ImagePicker _picker = ImagePicker();
 
   // final imge = await ImagePicker().getImage(source: ImageSource.camera);

@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:heal_talk_doctor/index.dart';
 import 'package:smart_select/smart_select.dart';
+import 'package:path/path.dart';
 
 class EducationalInfo extends StatefulWidget {
   @override
@@ -9,14 +10,12 @@ class EducationalInfo extends StatefulWidget {
 }
 
 class _EducationalInfoState extends State<EducationalInfo> {
-  final experienceController = TextEditingController();
-
   final aboutController = TextEditingController();
 
-  final foccuseController = TextEditingController();
   String focus = '';
   String expe = '';
-  File _image;
+  File _cv;
+  File _licence;
   @override
   Widget build(BuildContext context) {
     List<S2Choice<String>> options = [
@@ -48,79 +47,147 @@ class _EducationalInfoState extends State<EducationalInfo> {
       body: Container(
         child: Align(
           alignment: Alignment.topCenter,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Container(
-                  child: Text(
-                "About Your Career ",
-                style: header1(),
-              )),
-              SizedBox(
-                height: 40,
-              ),
-              getExpOption(years, S2ModalType.popupDialog),
-              SizedBox(
-                height: 20,
-              ),
-              getFocusOption(options, S2ModalType.bottomSheet),
-              SizedBox(
-                height: 20,
-              ),
-              Container(
-                  width: MediaQuery.of(context).size.width * 0.9,
-                  child: TextFormField(
-                    controller: aboutController,
-                    keyboardType: TextInputType.multiline,
-                    maxLines: 4,
-                    maxLength: 1000,
-                    decoration: InputDecoration(
-                      hintText: "Tell us About you",
-                      fillColor: colors.bkColor,
-                    ),
-                  )),
-              SizedBox(
-                height: 20,
-              ),
-              Text("Upload your CV"),
-              SizedBox(
-                height: 10,
-              ),
-              btnCustom(
-                // width: MediaQuery.of(context).size.width * 0.5,
-                text: 'Upload',
-                color: colors.secondarypurpleColor,
-                textcolor: colors.white,
-                onpress: () {
-                  setState(() async {
-                    File img = await getImgFromGullery(_image);
-                    _image = File(img.path);
-                    // print(_image);
-                  });
-                },
-              ),
-              SizedBox(
-                height: 50,
-              ),
-              Container(
-                child: btnCustom(
-                  width: MediaQuery.of(context).size.width * 0.3,
-                  text: "Next",
-                  onpress: () {
-                    Navigator.push(context, createRoute(Signcontract()));
-                  },
-                  textcolor: colors.white,
-                  color: colors.primarygreenColor,
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Container(
+                    child: Text(
+                  "About Your Career ",
+                  style: header1(),
+                )),
+                SizedBox(
+                  height: 40,
                 ),
-              )
-            ],
+                getExpOption(years, S2ModalType.popupDialog, context),
+                SizedBox(
+                  height: 20,
+                ),
+                getFocusOption(options, S2ModalType.bottomSheet, context),
+                SizedBox(
+                  height: 20,
+                ),
+                Container(
+                    width: MediaQuery.of(context).size.width * 0.9,
+                    child: TextFormField(
+                      controller: aboutController,
+                      keyboardType: TextInputType.multiline,
+                      maxLines: 4,
+                      maxLength: 1000,
+                      decoration: InputDecoration(
+                        hintText: "Tell us About you",
+                        fillColor: colors.bkColor,
+                      ),
+                    )),
+                SizedBox(
+                  height: 20,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text("Upload your CV"),
+                    SizedBox(
+                      width: 20,
+                    ),
+                    btnCustom(
+                      // width: MediaQuery.of(context).size.width * 0.5,
+                      text: 'Upload',
+                      color: colors.secondarypurpleColor,
+                      textcolor: colors.white,
+                      onpress: () {
+                        setState(() async {
+                          File img = await getImgFromGullery(_cv);
+                          _cv = File(img.path);
+
+                          DisplayMsg().displayMessage(
+                              context: context,
+                              msg: "Your CV has beenis Uploaded!");
+                        });
+                      },
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text("Upload your Licence"),
+                    SizedBox(
+                      width: 20,
+                    ),
+                    btnCustom(
+                      // width: MediaQuery.of(context).size.width * 0.5,
+                      text: 'Upload',
+                      color: colors.secondarypurpleColor,
+                      textcolor: colors.white,
+                      onpress: () {
+                        setState(() async {
+                          File img = await getImgFromGullery(_licence);
+                          _licence = File(img.path);
+
+                          DisplayMsg().displayMessage(
+                              context: context,
+                              msg: "Your Licence has beenis Uploaded!");
+                        });
+                      },
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: 50,
+                ),
+                Container(
+                  child: btnCustom(
+                    width: MediaQuery.of(context).size.width * 0.3,
+                    text: "Next",
+                    onpress: () {
+                      doctorInputValidetor(context);
+                      CustomProgress().progress();
+                    },
+                    textcolor: colors.white,
+                    color: colors.primarygreenColor,
+                  ),
+                )
+              ],
+            ),
           ),
         ),
       ),
     );
   }
 
-  Widget getFocusOption(List option, S2ModalType style) {
+  doctorInputValidetor(context) async {
+    if (_cv == null ||
+        _licence == null ||
+        expe == '' ||
+        focus == '' ||
+        aboutController.text.isEmpty) {
+      DisplayMsg()
+          .displayMessage(msg: "Please Enter required info", context: context);
+    } else {
+      String fileName = basename(_cv.path);
+      String licensepath = basename(_licence.path);
+      FirebaseApi().uploadFile(_cv);
+      FirebaseApi().uploadFile(_licence);
+
+      String cvUrl = await FirebaseApi().downloadFile(fileName);
+      String licencUrl = await FirebaseApi().downloadFile(licensepath);
+      PageDataApi().updatePageInfo(2, false, false);
+
+      if (cvUrl != null && licencUrl != null) {
+        FirebaseApi().updateEducationalInfo(
+            expe, focus, aboutController.text.trim(), cvUrl, licencUrl);
+        DisplayMsg().displayMessage(
+            msg: "Your Cv and Licence have been successfully downloaded 🙋",
+            context: context);
+      }
+      Navigator.pushReplacement(context, createRoute(Signcontract()));
+    }
+  }
+
+  Widget getFocusOption(List option, S2ModalType style, context) {
     return Container(
       width: MediaQuery.of(context).size.width * 0.9,
       decoration: BoxDecoration(
@@ -148,7 +215,7 @@ class _EducationalInfoState extends State<EducationalInfo> {
     );
   }
 
-  Widget getExpOption(List option, S2ModalType style) {
+  Widget getExpOption(List option, S2ModalType style, context) {
     return Container(
       width: MediaQuery.of(context).size.width * 0.9,
       decoration: BoxDecoration(

@@ -13,7 +13,7 @@ export 'Utility/createRoute.dart';
 export 'Utility/displaymessage.dart';
 export 'Utility/progress.dart';
 export 'Utility/pickImage.dart';
-
+export 'Utility/formtransform.dart';
 ////////Color////////////////////////////////////
 export 'package:heal_talk_doctor/Color/Color.dart';
 /////////////Material///////////////////////////
@@ -53,9 +53,17 @@ export 'Screen/AdminScreen/AdminReport.dart';
 export 'Screen/AdminScreen/AdminNewDoctors.dart';
 export 'Screen/AdminScreen/Admin Message/AdminMessage.dart';
 export 'Screen/AdminScreen/Admin Message/Admin_Normal_warning_Message.dart';
-
+export 'Screen/waiteScreen.dart';
 export 'Screen/AdminScreen/AdminMore.dart';
+export 'Screen/errorHandeler/inputValidetor.dart';
 
 export 'api/firebaseApi.dart';
+export 'api/pageInfoData.dart';
 
 export 'Controller/auth.dart';
+
+export 'model/doctor.dart';
+export 'model/admin.dart';
+export 'model/message.dart';
+export 'model/patinet.dart';
+export 'model/pagedinfo.dart';

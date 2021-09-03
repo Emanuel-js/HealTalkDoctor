@@ -180,7 +180,7 @@ class drawer extends StatelessWidget {
                 GestureDetector(
                   child: DrawerRow(Icons.login_rounded, 'Logout'),
                   onTap: () {
-                    Navigator.push(context, createRoute(Login_Page()));
+                    Navigator.push(context, createRoute(LoginPage()));
                   },
                 ),
                 SizedBox(height: 30),

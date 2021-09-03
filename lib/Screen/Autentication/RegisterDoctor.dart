@@ -84,7 +84,7 @@ class _Register_PageState extends State<Register_Page> {
                             Container(
                               margin: EdgeInsets.only(bottom: 10, top: 50),
                               child: BuildText(
-                                label: "First Name",
+                                label: "Full Name",
                                 ispassword: false,
                                 controller: nameController,
                                 iconPrefix: Icon(
@@ -179,7 +179,7 @@ class _Register_PageState extends State<Register_Page> {
                             context,
                             MaterialPageRoute(
                                 builder: (BuildContext context) =>
-                                    Login_Page()));
+                                    LoginPage()));
                       },
                       child: Text(
                         'Login',
