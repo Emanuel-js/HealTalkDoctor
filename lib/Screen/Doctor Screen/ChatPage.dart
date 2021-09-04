@@ -118,7 +118,7 @@ class chat_page extends StatelessWidget {
                               context,
                               MaterialPageRoute(
                                   builder: (BuildContext context1) =>
-                                      patient_schedule()));
+                                      PatientSchedule()));
                         },
                       ),
                       FlatButton(

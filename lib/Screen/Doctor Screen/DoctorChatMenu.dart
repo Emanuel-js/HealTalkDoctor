@@ -37,7 +37,7 @@ class doctorchatmenu_Page extends StatelessWidget {
                     context,
                     MaterialPageRoute(
                         builder: (BuildContext context) =>
-                            doctor_notification()));
+                            DoctorNotification()));
               }),
         ],
       ),

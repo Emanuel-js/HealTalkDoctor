@@ -1,6 +1,7 @@
-import 'dart:math';
+import 'dart:collection';
 
 import 'package:heal_talk_doctor/index.dart';
+import 'package:provider/provider.dart';
 
 class DoctorHomePage extends StatefulWidget {
   @override
@@ -12,23 +13,40 @@ class _DoctorHomePageState extends State<DoctorHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    String id;
+    final data = Provider.of<Doctor>(context);
+
+    @override
+    void initState() {
+      super.initState();
+      if (data != null) {
+        // id = data.requtSender;
+        print(data.rate);
+      }
+    }
+
     return Scaffold(
       appBar: AppBar(
         iconTheme: IconThemeData(color: colors.primarygreenColor),
         elevation: 0,
         backgroundColor: colors.bkColor,
         actions: [
-          IconButton(
-              icon: Icon(
-                Icons.notifications_none,
-                color: colors.darkblue,
-              ),
-              onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (BuildContext context) =>
-                            doctor_notification()));
+          StreamBuilder<List<Request>>(
+              stream: RequestApi().request(id),
+              builder: (ctx, snapshot) {
+                if (!snapshot.hasData) return Text("no data");
+                return IconButton(
+                    icon: Icon(
+                      Icons.notifications_none,
+                      color: colors.darkblue,
+                    ),
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (BuildContext context) =>
+                                  DoctorNotification(request: snapshot.data)));
+                    });
               }),
         ],
       ),
@@ -75,7 +93,7 @@ class _DoctorHomePageState extends State<DoctorHomePage> {
                   Homedoctorcontainer(
                     text: 'Rating',
                     color: colors.primarygreenColor,
-                    display: '4.5',
+                    display: data != null ? data.rate : '10',
                   ),
                   SizedBox(
                     width: 20,
@@ -111,6 +129,9 @@ class _DoctorHomePageState extends State<DoctorHomePage> {
                     width: 20,
                   ),
                   btnCustom(
+                    onpress: () {
+                      Navigator.push(context, createRoute(PatientSchedule()));
+                    },
                     text: 'Schedule',
                     textcolor: colors.white,
                     height: MediaQuery.of(context).size.height * 0.07,
@@ -131,6 +152,8 @@ class _DoctorHomePageState extends State<DoctorHomePage> {
 class drawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final data = Provider.of<Doctor>(context);
+
     return Container(
       padding: EdgeInsets.only(bottom: 20, left: 20, right: 20),
       width: MediaQuery.of(context).size.width * 0.7,
@@ -150,7 +173,7 @@ class drawer extends StatelessWidget {
                     fit: StackFit.expand,
                     children: [
                       Image(
-                        image: AssetImage('assets/images/DoctorLogo.png'),
+                        image: NetworkImage(data?.img),
                       ),
                       Align(
                         alignment: Alignment.bottomRight,
@@ -223,7 +246,7 @@ class Homedoctorcontainer extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           Label1(
-            text: display,
+            text: "$display",
             color: colors.white,
             fontsize: 40.0,
           ),
@@ -239,30 +262,61 @@ class Homedoctorcontainer extends StatelessWidget {
 
 //////////////View Notification
 
-class doctor_notification extends StatelessWidget {
+class DoctorNotification extends StatelessWidget {
+  List<Request> request;
+  DoctorNotification({this.request});
   @override
   Widget build(BuildContext context) {
+    //  / final req = Provider.of<List<Request>>(context);
+    // if (data == null || this.request == null) return Text("no request here!");
     return Scaffold(
-      backgroundColor: colors.bkColor,
-      appBar: AppBar(
-        elevation: 0,
         backgroundColor: colors.bkColor,
-        leading: btnBack(
-          width: 40.0,
-          height: 40.0,
-          onpressed: () {
-            Navigator.pop(context);
-          },
+        appBar: AppBar(
+          elevation: 0,
+          backgroundColor: colors.bkColor,
+          leading: btnBack(
+            width: 40.0,
+            height: 40.0,
+            onpressed: () {
+              Navigator.pop(context);
+            },
+          ),
+          title: Label1(text: 'Notifications', color: colors.black),
+          centerTitle: true,
         ),
-        title: Label1(text: 'Notifications', color: colors.black),
-        centerTitle: true,
-      ),
-      body: Container(
-        padding: EdgeInsets.all(20),
-        child: Column(
-          children: [],
-        ),
-      ),
+        body: request != null
+            ? Container(
+                child: ListView.builder(
+                    itemCount: request.length,
+                    itemBuilder: (BuildContext ctxt, int index) {
+                      return listAllRequest(request[index], context);
+                    }))
+            : CustomProgress().progress());
+  }
+
+  listAllRequest(Request request, context) {
+    // final data = Provider.of<Doctor>(context);
+    // print(request.reqReciverId);
+    // if (data != null) {
+    //   return StreamBuilder<List<Patient>>(
+    //       stream: PatientApi().getlistofPatinet(data),
+    //       builder: (ctx, snapshot) {
+    //         if (!snapshot.hasData) return Text("no data for now!");
+    //         final patients = snapshot.data;
+    //         return ListView.builder(
+    //             itemCount: patients.length,
+    //             itemBuilder: (BuildContext ctxt, int index) {
+    //               final patent = patients[index];
+    //               return displayPatient(patent);
+    //             });
+    //       });
+    // }
+    // return Text("oops");
+  }
+
+  Widget displayPatient(Patient p) {
+    return ListTile(
+      title: Text(p.firstName),
     );
   }
 }

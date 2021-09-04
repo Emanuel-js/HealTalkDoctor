@@ -25,4 +25,9 @@ class Utils {
 
     return date.toUtc();
   }
+  // static dynamic fromDateTimeToJson(DateTime date) {
+  //   if (date == null) return null;
+
+  //   return date.toUtc();
+  // }
 }

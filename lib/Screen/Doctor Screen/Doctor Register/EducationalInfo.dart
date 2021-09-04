@@ -182,8 +182,8 @@ class _EducationalInfoState extends State<EducationalInfo> {
         DisplayMsg().displayMessage(
             msg: "Your Cv and Licence have been successfully downloaded 🙋",
             context: context);
+        Navigator.pushReplacement(context, createRoute(Welcomepage()));
       }
-      Navigator.pushReplacement(context, createRoute(Signcontract()));
     }
   }
 

@@ -59,6 +59,8 @@ export 'Screen/errorHandeler/inputValidetor.dart';
 
 export 'api/firebaseApi.dart';
 export 'api/pageInfoData.dart';
+export 'api/patientApi.dart';
+export 'api/requestApi.dart';
 
 export 'Controller/auth.dart';
 
@@ -67,3 +69,4 @@ export 'model/admin.dart';
 export 'model/message.dart';
 export 'model/patinet.dart';
 export 'model/pagedinfo.dart';
+export 'model/request.dart';

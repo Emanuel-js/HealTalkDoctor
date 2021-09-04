@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:heal_talk_doctor/index.dart';
 
-class patient_schedule extends StatelessWidget {
+class PatientSchedule extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(

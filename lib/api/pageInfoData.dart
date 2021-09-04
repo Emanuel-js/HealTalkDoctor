@@ -1,10 +1,6 @@
-import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
-import 'package:firebase_core/firebase_core.dart' as firebase_core;
-import 'package:flutter/foundation.dart';
-import 'package:path/path.dart';
+
 import 'package:heal_talk_doctor/index.dart';
 
 class PageDataApi {
@@ -40,17 +36,11 @@ class PageDataApi {
   }
 
   PageInfo _getPageInfo(DocumentSnapshot snapshot) {
-    return PageInfo(
-      progress: snapshot["progress"],
-      ownerId: snapshot["ownerId"],
-      isrejected: snapshot["isrejected"],
-      isaccepted: snapshot["isaccepted"],
-      timestamps: Utils.toDateTime(snapshot["timestamps"]),
-    );
+    return PageInfo.fromJson(snapshot.data());
   }
 
   Stream<PageInfo> get pageInfo => pageInfoCollection
-      .doc(_auth.currentUser.uid)
+      .doc(_auth.currentUser?.uid)
       .snapshots()
       .map(_getPageInfo);
 }

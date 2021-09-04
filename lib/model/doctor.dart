@@ -1,5 +1,4 @@
-import 'dart:convert';
-
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:heal_talk_doctor/index.dart';
 
 class DoctorField {
@@ -10,13 +9,12 @@ class Doctor {
   final String fullName;
   final String gender;
   final String expriance;
-  final String rate;
+  final int rate;
   final String focus;
   final String detail;
   final String dId;
   final String img;
   final DateTime createdDate;
-  final bool requestStatus;
   final String cv;
   final bool isactive;
   final String email;
@@ -25,6 +23,7 @@ class Doctor {
   final String phone;
   final String nameTitle;
   final DateTime dob;
+  final List requtSender;
 
   Doctor(
       {this.fullName,
@@ -37,35 +36,34 @@ class Doctor {
       this.dId,
       this.cv,
       this.licence,
-      this.requestStatus,
       this.createdDate,
       this.address,
       this.nameTitle,
       this.phone,
       this.dob,
       this.email,
+      this.requtSender,
       this.isactive});
 
   fromJson(Map<String, dynamic> json) => Doctor(
-        fullName: json["fullName"],
-        gender: json["gender"],
-        expriance: json["expriance"],
-        rate: json["rate"],
-        focus: json["focus"],
-        detail: json["detail"],
-        img: json["img"],
-        dId: json["dId"],
-        requestStatus: json["requestStatus"],
-        cv: json["cv"],
-        email: json["email"],
-        licence: json["licence"],
-        address: json["address"],
-        phone: json["phone"],
-        nameTitle: json["nameTitle"],
-        isactive: json["isactive"],
-        dob: json["dob"],
-        createdDate: Utils.toDateTime(json['createdDate']),
-      );
+      fullName: json["fullName"],
+      gender: json["gender"],
+      expriance: json["expriance"],
+      rate: json["rate"],
+      focus: json["focus"],
+      detail: json["detail"],
+      img: json["img"],
+      dId: json["dId"],
+      cv: json["cv"],
+      email: json["email"],
+      licence: json["licence"],
+      address: json["address"],
+      phone: json["phone"],
+      nameTitle: json["nameTitle"],
+      isactive: json["isactive"],
+      dob: Utils.toDateTime(json["dob"]),
+      requtSender: json["requtSender"],
+      createdDate: Utils.toDateTime(json['createdDate']));
 
   Map<String, dynamic> toJson() => {
         "fullName": fullName,
@@ -76,14 +74,14 @@ class Doctor {
         "detail": detail,
         "img": img,
         "dId": dId,
-        "dob": dob,
-        "requestStatus": requestStatus,
+        "dob": Utils.fromDateTimeToJson(dob),
         "cv": cv,
         "email": email,
         "licence": licence,
         "address": address,
         "phone": phone,
         "nameTitle": nameTitle,
+        "requtSender": requtSender,
         "isactive": isactive,
         'createdDate': Utils.fromDateTimeToJson(createdDate),
       };

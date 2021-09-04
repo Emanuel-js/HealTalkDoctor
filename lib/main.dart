@@ -14,25 +14,29 @@ final userCur = auth.currentUser;
 
 class HealTalk extends StatelessWidget {
   // This widget is the root of your application.
+  
 
   @override
   Widget build(BuildContext context) {
+    
     return MultiProvider(
       providers: [
         StreamProvider<PageInfo>(
           create: (_) => PageDataApi().pageInfo,
           initialData: null,
-        )
+        ),
+        StreamProvider<Patient>(
+          create: (_) => PatientApi().patient,
+          initialData: null,
+        ),
+        StreamProvider<Doctor>(
+          create: (_) => FirebaseApi().doctor,
+          initialData: null,
+        ),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        home: Scaffold(
-            //body: admin_home(),
-            //body: mainpage(),
-            body: PageControll()
-            //body: doctorchatmenu_Page(),
-            //body: admin_send_message(),
-            ),
+        home: Scaffold(body: PageControll()),
       ),
     );
   }

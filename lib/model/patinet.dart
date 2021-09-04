@@ -12,7 +12,7 @@ class Patient {
   final String gender;
   final bool isanonymous;
   final String picture;
-  final DateTime createdDate;
+  final DateTime lastMessageTime;
   final String pId;
   Patient(
       {this.pId,
@@ -23,9 +23,9 @@ class Patient {
       this.gender,
       this.isanonymous,
       this.picture,
-      this.createdDate});
+      this.lastMessageTime});
 
-  static fromJson(Map<String, dynamic> json) => Patient(
+  fromJson(Map<String, dynamic> json) => Patient(
         pId: json["pId"],
         firstName: json['FirstName'],
         lastName: json["LastName"],
@@ -34,7 +34,7 @@ class Patient {
         gender: json["gender"],
         picture: json["picture"],
         isanonymous: json["isanonymous"],
-        createdDate: Utils.toDateTime(json['createdDate']),
+        lastMessageTime: Utils.toDateTime(json['lastMessageTime']),
       );
 
   Map<String, dynamic> toJson() => {
@@ -46,6 +46,6 @@ class Patient {
         "gender": gender,
         "isanonymous": isanonymous,
         "picture": picture,
-        'createdDate': Utils.fromDateTimeToJson(createdDate),
+        'lastMessageTime': Utils.fromDateTimeToJson(lastMessageTime),
       };
 }
