@@ -38,6 +38,14 @@ class FirebaseApi {
     await doctorCollection.doc(_auth.currentUser.uid).update(data);
   }
 
+  Future updatePateintRequest(Map rm) async {
+    Map data = {
+      'requtSender': FieldValue.arrayRemove([rm])
+    };
+
+    await doctorCollection.doc(_auth.currentUser.uid).update(data);
+  }
+
   Future updateEducationalInfo(String expriance, String focus, String detail,
       String cv, String licence) async {
     Map<String, dynamic> data = <String, dynamic>{
@@ -46,13 +54,14 @@ class FirebaseApi {
       "detail": detail,
       "cv": cv,
       "licence": licence,
-      "requtSender": []
+      "requtSender": [],
+      "rate": 0
     };
     await doctorCollection.doc(_auth.currentUser.uid).update(data);
   }
 
   Doctor _getdoctor(DocumentSnapshot doc) {
-    print(Utils.toDateTime(doc["createdDate"]));
+    // print(Utils.toDateTime(doc["createdDate"]));
     return Doctor(
         fullName: doc["fullName"],
         gender: doc["gender"],

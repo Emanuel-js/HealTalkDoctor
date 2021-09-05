@@ -12,6 +12,7 @@ class RequestApi {
   Future updateRequest(bool state, String senderId) async {
     Map<String, dynamic> data = <String, dynamic>{
       "isaccepted": state,
+      "state": state,
     };
     await refRequests.doc(senderId).update(data).whenComplete(() => DisplayMsg()
         .displayMessage(msg: "You request is Updated", context: context));
@@ -23,4 +24,33 @@ class RequestApi {
 
   Stream<List<Request>> request(String id) =>
       refRequests.snapshots().map(_getrequest);
+
+  ///otehrs
+  ///
+  ///
+  static final refOthers = FirebaseFirestore.instance.collection('Others');
+
+  Future sendOther(bool isclear, String acceptedDoctorID) async {
+    final newOther = Other(
+      acceptedDoctorID: acceptedDoctorID,
+      patientId: _auth.currentUser.uid,
+      isclear: isclear,
+    );
+    await refOthers.doc(_auth.currentUser.uid).set(newOther.toJson());
+  }
+
+  //get Other
+
+  Other _getOther(DocumentSnapshot snapshot) {
+    // print("Other");
+    // print(snapshot);
+    return Other(
+      acceptedDoctorID: snapshot["acceptedDoctorID"],
+      patientId: snapshot['patientId'],
+      isclear: snapshot['isclear'],
+    );
+  }
+
+  Stream<Other> get getOters =>
+      refOthers.doc(_auth.currentUser.uid).snapshots().map(_getOther);
 }

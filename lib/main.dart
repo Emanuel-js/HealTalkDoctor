@@ -14,11 +14,9 @@ final userCur = auth.currentUser;
 
 class HealTalk extends StatelessWidget {
   // This widget is the root of your application.
-  
 
   @override
   Widget build(BuildContext context) {
-    
     return MultiProvider(
       providers: [
         StreamProvider<PageInfo>(
@@ -31,6 +29,10 @@ class HealTalk extends StatelessWidget {
         ),
         StreamProvider<Doctor>(
           create: (_) => FirebaseApi().doctor,
+          initialData: null,
+        ),
+        StreamProvider<Other>(
+          create: (_) => RequestApi().getOters,
           initialData: null,
         ),
       ],
