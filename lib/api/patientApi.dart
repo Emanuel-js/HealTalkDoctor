@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:heal_talk_doctor/index.dart';
+import 'package:provider/provider.dart';
 
 class PatientApi {
   final _auth = FirebaseAuth.instance;
@@ -8,8 +9,6 @@ class PatientApi {
       FirebaseFirestore.instance.collection('Patient');
 
   Patient _getSinglePatient(DocumentSnapshot snapshot) {
-    print("get list.........");
-    print(snapshot.data());
     return Patient().fromJson(snapshot.data());
   }
 
@@ -41,33 +40,30 @@ class PatientApi {
       .where('pId', isEqualTo: sender)
       .snapshots()
       .map(_getlistOfPatient);
+  Stream<List<Patient>> get getallPatinet => patientCollection
+      .orderBy('createdDate')
+      .snapshots()
+      .map(_getlistOfPatient);
 
-  Stream<List<Patient>> getptentbyId(senderList) {
-    List data = [];
-    return senderList.forEach((element) {
-      print(".....for....");
-      print(element["senderID"]);
+  //get a list of requested patient
+
+  // Future<List<Patient>> fetchAllMembers(List membersIDS) async {
+  //   /// With whereIn
+  //   var result =
+  //       await patientCollection.where('pId', whereIn: membersIDS).get();
+  //   var documents =
+  //       result.docs.map((doc) => Patient().fromJson(doc.data())).toList();
+
+  //   print(documents);
+  //   return documents;
+  // }
+
+  Stream<Patient> getptentbyId(requtSender) {
+    return requtSender.forEach((element) {
       return patientCollection
           .doc(element["senderID"])
-          .get()
-          .then((DocumentSnapshot json) {
-        if (json.exists) {
-          data.add(json.data());
-          data
-              .map((e) => Patient(
-                    pId: e["pId"],
-                    firstName: e['firstName'],
-                    lastName: e["lastName"],
-                    age: e["age"],
-                    email: e["email"],
-                    gender: e["gender"],
-                    picture: e["picture"],
-                    isanonymous: e["isanonymous"],
-                    createdDate: Utils.toDateTime(e['createdDate']),
-                  ))
-              .toList();
-        }
-      });
+          .snapshots()
+          .map(_getSinglePatient);
     });
   }
 }

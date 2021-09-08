@@ -82,3 +82,5 @@ export 'model/patinet.dart';
 export 'model/pagedinfo.dart';
 export 'model/request.dart';
 export 'model/others.dart';
+export 'model/client.dart';
+export 'model/note.dart';

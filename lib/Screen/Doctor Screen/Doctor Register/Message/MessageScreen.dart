@@ -21,12 +21,15 @@ class _ChatPageState extends State<ChatPage> {
 
   @override
   Widget build(BuildContext context) {
-    // final doctor = Provider.of<Doctor>(context);
-
+    final doctor = Provider.of<Doctor>(context);
+    String url;
+    if (doctor != null) {
+      url = doctor.img;
+    }
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
-        backgroundColor: colors.bkColor,
+        backgroundColor: colors.black,
         leading: Container(
           child: IconButton(
             color: colors.primarypurpleColor,
@@ -42,7 +45,7 @@ class _ChatPageState extends State<ChatPage> {
         actions: [
           Container(
             child: Hero(
-              tag: "pro",
+              tag: "${widget.patient.pId}",
               child: CircleAvatar(
                 radius: 25,
                 backgroundImage: NetworkImage(widget.patient?.picture),
@@ -50,7 +53,12 @@ class _ChatPageState extends State<ChatPage> {
             ),
           ),
           Container(
-              child: IconButton(icon: Icon(Icons.phone), onPressed: () {})),
+              child: IconButton(
+                  icon: Icon(
+                    Icons.phone,
+                    color: colors.primarypurpleColor,
+                  ),
+                  onPressed: () {})),
           PopupMenuButton<Menus>(
             onSelected: (Menus result) {
               // setState(() {
@@ -59,26 +67,33 @@ class _ChatPageState extends State<ChatPage> {
             },
             itemBuilder: (BuildContext context) => <PopupMenuEntry<Menus>>[
               PopupMenuItem<Menus>(
-                value: Menus.schedule,
+                value: Menus.note,
                 child: Container(
                   child: GestureDetector(
-                    onTap: () =>
-                        Navigator.push(context, createRoute(DoctorHomePage())),
-                    child: Text('Schedule'),
+                    onTap: () => Navigator.push(context,
+                        createRoute(DisplayNote(patient: widget.patient))),
+                    child: Text('Take Note'),
                   ),
                 ),
               ),
               PopupMenuItem<Menus>(
-                value: Menus.detail,
-                child: Text('Show Profile'),
+                value: Menus.schedule,
+                child: Container(
+                  child: GestureDetector(
+                    onTap: () =>
+                        Navigator.push(context, createRoute(PatientSchedule())),
+                    child: Text('schedule'),
+                  ),
+                ),
               ),
               PopupMenuItem<Menus>(
                 value: Menus.end_sessions,
-                child: Text('End Sessions'),
-              ),
-              PopupMenuItem<Menus>(
-                value: Menus.report,
-                child: Text('Report'),
+                child: Container(
+                  child: GestureDetector(
+                    onTap: () => endSessions(),
+                    child: Text('End Session'),
+                  ),
+                ),
               ),
             ],
           )
@@ -99,10 +114,62 @@ class _ChatPageState extends State<ChatPage> {
               ),
             ),
             NewMessageWidget(
-                ownerId: _auth.currentUser.uid, idUser: widget.patient.pId)
+                ownerId: _auth.currentUser.uid,
+                idUser: widget.patient.pId,
+                avaterUrl: url)
           ],
         ),
       ),
+    );
+  }
+
+  Widget endSessions() {
+    return Container(child: showAlertDialog(context));
+  }
+
+  showAlertDialog(BuildContext context) {
+    // set up the buttons
+    final colors = Appcolor();
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      backgroundColor: colors.primarygreenColor,
+      // contentPadding: EdgeInsets.all(30),
+      actionsPadding: EdgeInsets.all(10),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+      title: Text("Are you sure ?",
+          style: header2(
+            color: colors.white,
+          )),
+      content: Text("End Session",
+          style: body1(
+            color: colors.white,
+          )),
+      actions: [
+        Button1(
+          text: "Cancel",
+          color: Colors.red,
+          onpress: () {
+            Navigator.pop(context);
+          },
+        ),
+        Button1(
+          color: Colors.blueGrey,
+          text: "Continue",
+          onpress: () {
+            // RequestApi().updateRequest(false, id);
+            // FirebaseApi().updatePateintRequest(rm);
+            //todo update doctor db
+          },
+        ),
+      ],
+    );
+
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
     );
   }
 }
@@ -143,4 +210,4 @@ class MessageScreen extends StatelessWidget {
   }
 }
 
-enum Menus { schedule, detail, end_sessions, report }
+enum Menus { schedule, note, end_sessions }

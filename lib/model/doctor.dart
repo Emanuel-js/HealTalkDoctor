@@ -9,7 +9,7 @@ class Doctor {
   final String fullName;
   final String gender;
   final String expriance;
-  final int rate;
+  final List rate;
   final String focus;
   final String detail;
   final String dId;

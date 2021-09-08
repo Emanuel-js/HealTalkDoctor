@@ -1,18 +1,18 @@
 import 'package:heal_talk_doctor/Screen/AdminScreen/AdminHome.dart';
 import 'package:heal_talk_doctor/index.dart';
 
-class Login_Page_Admin extends StatefulWidget {
+class LoginPageAdmin extends StatefulWidget {
   @override
-  _Login_Page_AdminState createState() => _Login_Page_AdminState();
+  _LoginPageAdminState createState() => _LoginPageAdminState();
 }
 
-class _Login_Page_AdminState extends State<Login_Page_Admin> {
+class _LoginPageAdminState extends State<LoginPageAdmin> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final bool isvisble = false;
-
+  final auth = AuthControlle();
   bool isChecked = false;
-
+  bool isloading = true;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -89,12 +89,6 @@ class _Login_Page_AdminState extends State<Login_Page_Admin> {
                           ispassword: true,
                           controller: passwordController,
                           isvisble: isvisble,
-                          onPress: () {
-                            setState(() {
-                              isvisble:
-                              !isvisble;
-                            });
-                          },
                         ),
                         CheckboxListTile(
                           value: isChecked,
@@ -124,10 +118,7 @@ class _Login_Page_AdminState extends State<Login_Page_Admin> {
                     text: 'Login',
                     color: colors.primarygreenColor,
                     onpress: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (BuildContext context) => admin_home()));
+                      validetor(context);
                     },
                   ),
                 ),
@@ -137,5 +128,40 @@ class _Login_Page_AdminState extends State<Login_Page_Admin> {
         ),
       ),
     );
+  }
+
+  void validetor(BuildContext context) async {
+    if (emailController.text.isEmpty) {
+      DisplayMsg()
+          .displayMessage(msg: "Please Enter an Email", context: context);
+    } else if (!emailController.text.contains("@")) {
+      DisplayMsg().displayMessage(msg: "Invalid Email", context: context);
+    } else if (passwordController.text.isEmpty) {
+      DisplayMsg().displayMessage(msg: "Enter Password", context: context);
+    } else if (passwordController.text.length < 6) {
+      DisplayMsg().displayMessage(
+          msg: "Password must be > 6 character", context: context);
+    } else {
+      setState(() {
+        isloading = false;
+      });
+      final u = await auth.login(
+          emailController.text.trim(), passwordController.text.trim(), context);
+
+      if (u) {
+        setState(() {
+          if (u) {
+            DisplayMsg().displayMessage(
+                msg: "Welcome Back", context: context, iserror: false);
+            isloading = false;
+            Navigator.push(context, createRoute(admin_home()));
+          }
+        });
+      } else {
+        setState(() {
+          isloading = true;
+        });
+      }
+    }
   }
 }

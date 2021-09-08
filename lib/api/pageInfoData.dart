@@ -35,11 +35,20 @@ class PageDataApi {
     await pageInfoCollection.doc(_auth.currentUser.uid).update(data);
   }
 
-  PageInfo _getPageInfo(DocumentSnapshot snapshot) {
-    return PageInfo.fromJson(snapshot.data());
+  PageInfo _getPageInfo(DocumentSnapshot json) {
+    return PageInfo(
+        timestamps: Utils.toDateTime(json['timestamps']),
+        progress: json["progress"],
+        ownerId: json["ownerId"],
+        isrejected: json["isrejected"],
+        isaccepted: json["isaccepted"]);
   }
 
   Stream<PageInfo> get pageInfo => pageInfoCollection
+      .doc(_auth.currentUser?.uid)
+      .snapshots()
+      .map(_getPageInfo);
+  Stream<PageInfo> pageInfos(String id) => pageInfoCollection
       .doc(_auth.currentUser?.uid)
       .snapshots()
       .map(_getPageInfo);

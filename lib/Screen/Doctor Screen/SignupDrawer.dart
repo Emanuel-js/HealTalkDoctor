@@ -17,13 +17,12 @@ class _SignUpDrawerState extends State<SignUpDrawer> {
 
   @override
   Widget build(BuildContext context) {
-    // final progress = Provider.of<PageInfo>(context);
-    // if (progress != null) {
-    //   setState(() {
-    //     coutprogrss = progress.progress;
-    //     iscomleted = progress.isaccepted;
-    //   });
-    // }
+    final progress = Provider.of<Doctor>(context);
+    if (progress != null) {
+      setState(() {
+        iscomleted = progress.isactive;
+      });
+    }
 
     return Drawer(
       elevation: 99,
@@ -33,7 +32,7 @@ class _SignUpDrawerState extends State<SignUpDrawer> {
             if (!snapshot.hasData) return CustomProgress().progress();
             final data = snapshot.data;
             coutprogrss = data.progress;
-            iscomleted = data.isaccepted;
+            // iscomleted = data.isaccepted;
             return Container(
                 child: ListView(
               // Important: Remove any padding from the ListView.

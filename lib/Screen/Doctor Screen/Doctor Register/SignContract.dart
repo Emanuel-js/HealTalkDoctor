@@ -42,12 +42,12 @@ class Signcontract extends StatelessWidget {
               onpress: () {
                 Navigator.push(context, createRoute(DoctorHomePage()));
               }),
-          btnCustom(
-            height: 40.0,
-            color: colors.redColor,
-            text: "Reject Contract",
-            textcolor: colors.white,
-          )
+          // btnCustom(
+          //   height: 40.0,
+          //   color: colors.redColor,
+          //   text: "Reject Contract",
+          //   textcolor: colors.white,
+          // )
         ],
       )),
     );

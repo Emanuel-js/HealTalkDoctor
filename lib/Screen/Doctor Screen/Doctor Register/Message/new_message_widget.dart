@@ -5,10 +5,12 @@ import 'package:heal_talk_doctor/index.dart';
 class NewMessageWidget extends StatefulWidget {
   final String ownerId;
   final String idUser;
+  final String avaterUrl;
 
   const NewMessageWidget({
     @required this.ownerId,
     @required this.idUser,
+    @required this.avaterUrl,
     Key key,
   }) : super(key: key);
 
@@ -22,15 +24,9 @@ class _NewMessageWidgetState extends State<NewMessageWidget> {
 
   void sendMessage() async {
     FocusScope.of(context).unfocus();
-    print("....owner........");
-    print(widget.ownerId);
-    print("............");
-    print("....user........");
-    print(widget.idUser);
-    print("............");
-    await MessageApi()
-        .uploadMessage(widget.idUser, widget.ownerId, message, "m", "");
-    print("message is send!");
+
+    await MessageApi().uploadMessage(
+        widget.idUser, widget.ownerId, message, widget.avaterUrl, "");
     _controller.clear();
   }
 

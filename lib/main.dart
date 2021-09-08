@@ -27,6 +27,14 @@ class HealTalk extends StatelessWidget {
           create: (_) => PatientApi().patient,
           initialData: null,
         ),
+        StreamProvider<List<Patient>>(
+          create: (_) => PatientApi().getallPatinet,
+          initialData: null,
+        ),
+        StreamProvider<List<Doctor>>(
+          create: (_) => FirebaseApi().getdoctor,
+          initialData: null,
+        ),
         StreamProvider<Doctor>(
           create: (_) => FirebaseApi().doctor,
           initialData: null,
@@ -35,11 +43,14 @@ class HealTalk extends StatelessWidget {
           create: (_) => RequestApi().getOters,
           initialData: null,
         ),
+        StreamProvider<List<Schedule>>(
+          create: (_) => RequestApi().schedule,
+          initialData: null,
+        ),
       ],
       child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        home: Scaffold(body: PageControll()),
-      ),
+          debugShowCheckedModeBanner: false,
+          home: Scaffold(body: PageControll())),
     );
   }
 }
@@ -55,10 +66,10 @@ class PageControll extends StatelessWidget {
   }
 
   Widget pageControll(BuildContext context) {
-    final isacitve = Provider.of<PageInfo>(context);
+    final isacitve = Provider.of<Doctor>(context);
     if (userCur?.emailVerified == true && userCur != null && isacitve != null) {
       userCur.reload();
-      return isacitve.isaccepted ? DoctorHomePage() : Welcomepage();
+      return isacitve.isactive ? DoctorHomePage() : Welcomepage();
     } else {
       return mainpage();
     }

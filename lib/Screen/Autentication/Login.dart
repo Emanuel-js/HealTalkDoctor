@@ -24,7 +24,7 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    final isactive = Provider.of<PageInfo>(context);
+    final isactive = Provider.of<Doctor>(context);
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -55,7 +55,7 @@ class _LoginPageState extends State<LoginPage> {
                   ]),
             ),
             onTap: () {
-              Navigator.push(context, createRoute(Login_Page_Admin()));
+              Navigator.push(context, createRoute(LoginPageAdmin()));
             },
           )
         ],
@@ -137,8 +137,7 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  void validetor(BuildContext context, PageInfo isactive) async {
-    print("what");
+  void validetor(BuildContext context, Doctor isactive) async {
     if (emailController.text.isEmpty) {
       DisplayMsg()
           .displayMessage(msg: "Please Enter an Email", context: context);
@@ -159,9 +158,8 @@ class _LoginPageState extends State<LoginPage> {
       //     msg: "Welcome Back", context: context, iserror: false);
 
       if (u && isactive != null) {
-        print("WTF");
         setState(() {
-          if (u && isactive.isaccepted) {
+          if (u && isactive.isactive) {
             DisplayMsg().displayMessage(
                 msg: "Welcome Back", context: context, iserror: false);
             isloading = false;

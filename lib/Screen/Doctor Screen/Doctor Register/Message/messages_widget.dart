@@ -37,9 +37,7 @@ class MessagesWidget extends StatelessWidget {
             itemCount: ownerMsg.length,
             itemBuilder: (context, index) {
               final ownerMsgs = ownerMsg[index];
-              // final message = doctor[index];
-              print("owner Id = $ownerId");
-              print("userID =$idUser");
+
               return MessageWidget(
                 // ownermessage: ownerMsgs,
                 message: ownerMsgs,

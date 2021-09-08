@@ -1,8 +1,12 @@
 import 'package:heal_talk_doctor/index.dart';
+import 'package:provider/provider.dart';
 
 class admin_list_screen extends StatelessWidget {
   final searchcontroller = TextEditingController();
   Widget build(BuildContext context) {
+    final doctor = Provider.of<List<Doctor>>(context);
+    final patient = Provider.of<List<Patient>>(context);
+
     return Scaffold(
       appBar: AppBar(
         leading: PopupMenuButton(
@@ -54,7 +58,7 @@ class admin_list_screen extends StatelessWidget {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (BuildContext context) => admin_notification()));
+                      builder: (BuildContext context) => AdminNotification()));
             },
           ),
           PopupMenuButton(
@@ -95,7 +99,7 @@ class admin_list_screen extends StatelessWidget {
                   Container(
                     height: MediaQuery.of(context).size.height * 0.75,
                     child: ListView.builder(
-                        itemCount: Drlist.length,
+                        itemCount: doctor?.length,
                         shrinkWrap: true,
                         padding: EdgeInsets.only(top: 16),
                         physics: AlwaysScrollableScrollPhysics(),
@@ -104,62 +108,57 @@ class admin_list_screen extends StatelessWidget {
                             onTap: () {
                               Navigator.push(
                                   context,
-                                  createRoute(doctor_detail_page(
-                                    name: Drlist[index].Name,
-                                    proffession: Drlist[index].Description,
-                                    img: Drlist[index].img,
-                                    phone: Drlist[index].Phone,
-                                    email: Drlist[index].Email,
-                                    address: Drlist[index].Address,
-                                  )));
+                                  createRoute(
+                                      DoctorDetailPage(doctor: doctor[index])));
                             },
-                            child: Container(
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(0),
-                                  color: colors.white,
-                                  boxShadow: <BoxShadow>[
-                                    BoxShadow(blurRadius: 5, color: colors.grey)
-                                  ]),
-                              margin: EdgeInsets.only(bottom: 2),
-                              padding: EdgeInsets.all(10),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  CircleAvatar(
-                                    backgroundImage:
-                                        AssetImage(Drlist[index].img),
-                                    //foregroundColor: colors.white,
-                                    backgroundColor: colors.grey,
-                                    minRadius: 40,
-                                  ),
-                                  /* Icon(
+                            child: doctor[index].isactive
+                                ? Container(
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(0),
+                                        color: colors.white,
+                                        boxShadow: <BoxShadow>[
+                                          BoxShadow(
+                                              blurRadius: 5, color: colors.grey)
+                                        ]),
+                                    margin: EdgeInsets.only(bottom: 2),
+                                    padding: EdgeInsets.all(10),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      children: [
+                                        CircleAvatar(
+                                          backgroundImage:
+                                              NetworkImage(doctor[index]?.img),
+                                          //foregroundColor: colors.white,
+                                          backgroundColor: colors.grey,
+                                          minRadius: 40,
+                                        ),
+                                        /* Icon(
               Icons.account_circle_rounded,
               size: 50,
               color: colors.black,
             ),*/
-                                  SizedBox(width: 10),
-                                  Column(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Label1(
-                                        text: Drlist[index].Name,
-                                        fontweight: FontWeight.bold,
-                                      ),
-                                      Label1(
-                                        text: Drlist[index].Description,
-                                        color: colors.greydark,
-                                      ),
-                                      Label1(
-                                        text: Drlist[index].ID.toString(),
-                                        color: colors.greydark,
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
+                                        SizedBox(width: 10),
+                                        Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Label1(
+                                              text: doctor[index]?.fullName,
+                                              fontweight: FontWeight.bold,
+                                            ),
+                                            Label1(
+                                              text: doctor[index]?.focus,
+                                              color: colors.greydark,
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  )
+                                : Text(''),
                           );
                         }),
                   ),

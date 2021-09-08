@@ -69,17 +69,12 @@ class _admin_report_screenState extends State<admin_report_screen> {
                                 ),
                               ),
                               onTap: () {
-                                Navigator.push(
-                                    context,
-                                    createRoute(doctor_detail_page(
-                                        name: Drlist[index].Name,
-                                        proffession: Drlist[index].Description,
-                                        img: Drlist[index].img,
-                                        phone: Drlist[index].Phone,
-                                        email: Drlist[index].Email,
-                                        address: Drlist[index].Address)));
+                                //Todo Report
+                                //   Navigator.push(
+                                //       context,
+                                //       createRoute(DoctorDetailPage(doctor:doctor[index],)));
                               },
-                            ),
+                            )
                           ],
                         )
                       ],

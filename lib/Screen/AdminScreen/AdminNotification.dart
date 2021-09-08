@@ -1,15 +1,15 @@
 import "package:heal_talk_doctor/index.dart";
 import 'package:convex_bottom_bar/convex_bottom_bar.dart';
 
-class admin_notification extends StatefulWidget {
+class AdminNotification extends StatefulWidget {
   @override
-  _admin_notificationState createState() => _admin_notificationState();
+  _AdminNotificationState createState() => _AdminNotificationState();
 }
 
-class _admin_notificationState extends State<admin_notification> {
+class _AdminNotificationState extends State<AdminNotification> {
   int _currentIndex = 0;
   final List<Widget> _children = [
-    admin_newdoctors_screen(),
+    AdminNewdoctorsScreen(),
     admin_report_screen(),
     admin_feedback_screen(),
   ];

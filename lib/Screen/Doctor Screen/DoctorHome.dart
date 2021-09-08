@@ -17,7 +17,14 @@ class _DoctorHomePageState extends State<DoctorHomePage> {
   Widget build(BuildContext context) {
     String id;
     final data = Provider.of<Doctor>(context);
-
+    double sum = 0;
+    double rate = 0;
+    data?.rate?.forEach((element) {
+      setState(() {
+        sum += element;
+        rate = (sum) / (data?.rate?.length + 5);
+      });
+    });
     return Scaffold(
       appBar: AppBar(
         iconTheme: IconThemeData(color: colors.primarygreenColor),
@@ -60,7 +67,7 @@ class _DoctorHomePageState extends State<DoctorHomePage> {
                   Homedoctorcontainer(
                     text: 'Active Clients',
                     color: colors.secondarypurpleColor,
-                    display: '3',
+                    display: '0',
                   ),
                   SizedBox(
                     width: 20,
@@ -68,7 +75,7 @@ class _DoctorHomePageState extends State<DoctorHomePage> {
                   Homedoctorcontainer(
                     text: 'Treated Clients',
                     color: colors.lightblue,
-                    display: '7',
+                    display: '0',
                   ),
                 ],
               ),
@@ -81,7 +88,7 @@ class _DoctorHomePageState extends State<DoctorHomePage> {
                   Homedoctorcontainer(
                     text: 'Rating',
                     color: colors.primarygreenColor,
-                    display: data != null ? data.rate : '10',
+                    display: double.parse((rate).toStringAsFixed(1)),
                   ),
                   SizedBox(
                     width: 20,
@@ -89,7 +96,7 @@ class _DoctorHomePageState extends State<DoctorHomePage> {
                   Homedoctorcontainer(
                     text: 'Treated Clients',
                     color: colors.darkblue,
-                    display: '10',
+                    display: '0',
                   ),
                 ],
               ),
@@ -199,6 +206,7 @@ class drawer extends StatelessWidget {
                 GestureDetector(
                   child: DrawerRow(Icons.login_rounded, 'Logout'),
                   onTap: () {
+                    AuthControlle().logout();
                     Navigator.push(context, createRoute(LoginPage()));
                   },
                 ),
@@ -264,15 +272,18 @@ class DoctorNotification extends StatelessWidget {
     final doctor = Provider.of<Doctor>(context);
     String id;
     int index;
-    Map rm;
+
+    List<dynamic> reqList = [];
 
     if (doctor != null) {
       // print(doctor.requtSender);
       doctor.requtSender.forEach((element) {
         // // element.value.toList();
         id = element["senderID"];
+        // print(element);
+        reqList.add(element["senderID"]);
         // rm = element;
-        print(id);
+        // print(id);
         // FirebaseFirestore.instance
         //     .collection('Patient')
         //     .doc(element["senderID"])
@@ -283,6 +294,12 @@ class DoctorNotification extends StatelessWidget {
         //   }
         // });
       });
+      // final x = PatientApi()
+      //     .fetchAllMembers(reqList)
+      //     .then((value) => print("wowo...$value"));
+      // print("..............");
+      // print(PatientApi().fetchAllMembers(reqList));
+      // print("..............");
     }
 
     return Scaffold(
@@ -304,151 +321,113 @@ class DoctorNotification extends StatelessWidget {
           centerTitle: true,
         ),
         body: doctor != null
-            ? StreamBuilder<Patient>(
-                stream: PatientApi().patientlist(id),
-                builder: (ctx, snapshot) {
-                  if (!snapshot.hasData) {
-                    return Center(
-                        child: Text(
-                      "No Notification! 🍮",
-                      style: header1(),
-                    ));
-                  }
-
-                  return listAllRequest(snapshot.data, context);
-                },
-              )
+            ? ListView.builder(
+                itemCount: doctor.requtSender.length,
+                itemBuilder: (ctx, index) {
+                  print(doctor.requtSender[index]["senderID"]);
+                  return requestList(doctor.requtSender[index]["senderID"],
+                      context, doctor.requtSender[index]);
+                })
             : CustomProgress().progress());
   }
 
-  // control(context) {
-  //   print("hi!");
-  //   final doctor = Provider.of<Doctor>(context);
-  //   // List data = [];
-  //   final List data = [];
-  //   // print(doctor.requtSender);
-  //   doctor.requtSender.forEach((element) {
-  //     FirebaseFirestore.instance
-  //         .collection('Patient')
-  //         .where("pId", isEqualTo: element["senderID"])
-  //         .get()
-  //         .then((QuerySnapshot querySnapshot) {
-  //       querySnapshot.docs.forEach((doc) {
-  //         data.add(doc);
-  //       });
-  //     });
-
-  //     // return FirebaseFirestore.instance
-  //     //     .collection('Patient')
-  //     //     .doc(element["senderID"])
-  //     //     .get()
-  //     //     .then((DocumentSnapshot doc) {
-  //     //   if (doc.exists) {
-  //     //     print("herer!");
-  //     //     return data.add(doc.data());
-  //     //     // listAllRequest(data, context);
-  //     //   }
-
-  //     //   // listAllRequest(data, context);
-  //     //   // return ListView.builder(
-  //     //   //   itemCount: data.length,
-  //     //   //   itemBuilder: (context, index) {
-  //     //   //     return
-  //     //   //   },
-  //     //   // );
-  //     // });
-  //   });
-  // if (data.length > 0) {
-  //   print(data);
-
-  //   return Text("hi");
-  // }
-
-  // requestControl(context) {
-  //   final doctor = Provider.of<Doctor>(context);
-  //   // patient(context);
-  //   doctor != null
-  //       ? doctor.requtSender.forEach((element) {
-  //           // print(element["senderID"]);
-  //           StreamBuilder<Patient>(
-  //               stream: PatientApi().patientlist(element["senderID"]),
-  //               builder: (ctx, snapshot) {
-  //                 if (!snapshot.hasData)
-  //                   return Center(
-  //                       child: Text(
-  //                     "No Notification! 🍮",
-  //                     style: header1(),
-  //                   ));
-  //                 print("........");
-  //                 return listAllRequest(snapshot.data, context);
-  //               });
-  //         })
-  //       : CustomProgress().progress();
-  // }
-
-  Widget listAllRequest(patient, context) {
-    // List mydata = data;
-    // print(mydata[0]);
-
-    return Container(
-      margin: EdgeInsets.only(top: 30, left: 30),
-      width: MediaQuery.of(context).size.width * 0.8,
-      color: Color(0xFF72BF94),
-      child: GestureDetector(
-        onPanUpdate: (details) {
-          // Swiping in right direction.
-          if (details.delta.dx > 0) {
-            RequestApi().updateRequest(true, patient.pId);
-            // print("right");
-            //todo  navigot to message
-            // Navigator.pushReplacement(context, createRoute(ChatPage()));
-          }
-
-          // Swiping in left direction.
-          if (details.delta.dx < 0) {
-            // RequestApi().updateRequest(false, patient.pId);
-            showAlertDialog(context, "Are you sure?",
-                "do you want cancel the request! 🏃‍♀️", patient.pId);
-            // print("left");
-          }
-        },
-        child: Card(
-          color: Color(0xFF72BF94),
-          elevation: 9,
-          clipBehavior: Clip.antiAliasWithSaveLayer,
-          child: ListTile(
-            subtitle: Container(
-              padding: EdgeInsets.all(10),
+  Widget requestList(String id, context, isaccepted) {
+    return StreamBuilder<Patient>(
+      stream: PatientApi().patientlist(id),
+      builder: (ctx, snapshot) {
+        if (!snapshot.hasData && isaccepted['isaccepted'] == false) {
+          return Center(
               child: Text(
-                "do you want accept the request 🙋",
-                style: TextStyle(color: colors.call_bk_blue, fontSize: 16),
-              ),
-            ),
-            contentPadding: EdgeInsets.only(top: 20, bottom: 20),
-            title: Container(
-              margin: EdgeInsets.only(left: 10),
-              child: Text(patient.firstName + " " + patient.lastName,
-                  style: TextStyle(
-                      color: Colors.blueGrey,
-                      fontSize: 26,
-                      fontWeight: FontWeight.bold)),
-            ),
-            trailing: Container(
-                margin: EdgeInsets.only(top: 10),
-                child: Icon(Icons.arrow_forward_ios_rounded)),
-            leading: patient.picture != null
-                ? CircleAvatar(
-                    radius: 30,
-                    backgroundImage: NetworkImage(patient.picture, scale: 40),
-                  )
-                : Text(""),
-          ),
-        ),
-      ),
+            "No Notification! 🍮",
+            style: header1(),
+          ));
+        }
+
+        final data = snapshot.data;
+        return listAllRequest(data, context, isaccepted);
+      },
     );
   }
 
-  showAlertDialog(BuildContext context, String title, String disc, id) {
+  Widget listAllRequest(Patient patient, context, isaccepted) {
+    return isaccepted["isaccepted"] == false
+        ? Container(
+            margin: EdgeInsets.only(top: 30, left: 10, right: 10),
+            width: MediaQuery.of(context).size.width * 0.99,
+            color: Color(0xFF72BF94),
+            child: GestureDetector(
+                onPanUpdate: (details) {
+                  // Swiping in right direction.
+                  if (details.delta.dx > 0) {
+                    FirebaseApi().updateRequests(true);
+                    RequestApi().updateRequest(true, patient.pId);
+                    // print("right");
+                    //Todo  navigot to message
+                    RequestApi().updateClinte(true, patient.pId);
+                    Navigator.pushReplacement(
+                        context,
+                        createRoute(ChatPage(
+                            patient: patient, isaccepted: isaccepted)));
+                  }
+
+                  // Swiping in left direction.
+                  if (details.delta.dx < 0) {
+                    // RequestApi().updateRequest(false, patient.pId);
+                    showAlertDialog(
+                        context,
+                        "Are you sure?",
+                        "do you want cancel the request! 🏃‍♀️",
+                        patient.pId,
+                        isaccepted);
+                    // print("left");
+                  }
+                },
+                child: Card(
+                  color: Color(0xFF72BF94),
+                  elevation: 9,
+                  clipBehavior: Clip.antiAliasWithSaveLayer,
+                  child: ListTile(
+                    subtitle: Container(
+                      padding: EdgeInsets.all(10),
+                      child: Text(
+                        "do you want accept the request 🙋",
+                        style:
+                            TextStyle(color: colors.call_bk_blue, fontSize: 16),
+                      ),
+                    ),
+                    contentPadding: EdgeInsets.only(top: 20, bottom: 20),
+                    title: Container(
+                      margin: EdgeInsets.only(left: 10),
+                      child: patient.isanonymous == false
+                          ? Text(patient.firstName + " " + patient.lastName,
+                              style: TextStyle(
+                                  color: Colors.blueGrey,
+                                  fontSize: 26,
+                                  fontWeight: FontWeight.bold))
+                          : Text("anonymous"),
+                    ),
+                    trailing: Container(
+                        margin: EdgeInsets.only(top: 10),
+                        child: Icon(Icons.arrow_forward_ios_rounded)),
+                    leading: patient.isanonymous == false
+                        ? CircleAvatar(
+                            radius: 30,
+                            backgroundImage:
+                                NetworkImage(patient?.picture, scale: 40),
+                          )
+                        : Container(
+                            child: Text(
+                            "😎",
+                            style: header1(),
+                          )),
+                  ),
+                )),
+          )
+        : Text("");
+  }
+
+  showAlertDialog(
+      BuildContext context, String title, String disc, id, isaccepted) {
     // set up the buttons
     final colors = Appcolor();
     // set up the AlertDialog
@@ -478,6 +457,8 @@ class DoctorNotification extends StatelessWidget {
           text: "Continue",
           onpress: () {
             RequestApi().updateRequest(false, id);
+            // FirebaseApi().dletesreq(isaccepted);
+            Navigator.pop(context);
             // FirebaseApi().updatePateintRequest(rm);
             //todo update doctor db
           },

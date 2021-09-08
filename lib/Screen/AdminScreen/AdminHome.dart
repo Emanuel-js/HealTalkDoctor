@@ -9,7 +9,7 @@ class admin_home extends StatefulWidget {
 class _admin_homeState extends State<admin_home> {
   int _currentIndex = 0;
   final List<Widget> _children = [
-    admin_home_screen(),
+    AdminHomeScreen(),
     admin_list_screen(),
     admin_more_screen()
   ];

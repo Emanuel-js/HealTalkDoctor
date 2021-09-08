@@ -43,6 +43,7 @@ class AuthControlle {
     BuildContext context,
   ) async {
     try {
+      print("mooooo");
       await _auth.signInWithEmailAndPassword(email: email, password: password);
       return true;
     } on FirebaseAuthException catch (e) {

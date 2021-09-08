@@ -4,22 +4,9 @@ import 'package:heal_talk_doctor/index.dart';
 
 // Specific Doctor Display
 
-class doctor_detail_page extends StatelessWidget {
-  String name;
-  String proffession;
-  String img;
-  String dr_id;
-  int phone;
-  String email;
-  String address;
-  doctor_detail_page(
-      {this.name,
-      this.proffession,
-      this.img,
-      this.address,
-      this.email,
-      this.dr_id,
-      this.phone});
+class DoctorDetailPage extends StatelessWidget {
+  Doctor doctor;
+  DoctorDetailPage({this.doctor});
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -42,7 +29,7 @@ class doctor_detail_page extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   CircleAvatar(
-                    backgroundImage: AssetImage(img),
+                    backgroundImage: NetworkImage(doctor?.img),
                     radius: MediaQuery.of(context).size.width * 0.2,
                     backgroundColor: colors.grey,
                   ),
@@ -58,7 +45,7 @@ class doctor_detail_page extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Label1(
-                            text: name,
+                            text: doctor?.fullName,
                             fontsize: 18.0,
                             fontweight: FontWeight.bold,
                           ),
@@ -66,7 +53,7 @@ class doctor_detail_page extends StatelessWidget {
                             height: 20,
                           ),
                           Label1(
-                            text: proffession,
+                            text: doctor.focus,
                             color: colors.greydark,
                           ),
                           SizedBox(
@@ -80,7 +67,7 @@ class doctor_detail_page extends StatelessWidget {
                               children: [
                                 container_doctor_detail(
                                   icon: Icon(Icons.person),
-                                  text: name,
+                                  text: doctor?.fullName,
                                 ),
                                 SizedBox(
                                   height: 10,
@@ -90,7 +77,7 @@ class doctor_detail_page extends StatelessWidget {
                                     Icons.email,
                                     color: colors.redColor,
                                   ),
-                                  text: email,
+                                  text: doctor?.email,
                                 ),
                                 SizedBox(
                                   height: 10,
@@ -100,7 +87,7 @@ class doctor_detail_page extends StatelessWidget {
                                     Icons.phone,
                                     color: colors.primarygreenColor,
                                   ),
-                                  text: phone.toString(),
+                                  text: doctor?.phone,
                                 ),
                                 SizedBox(
                                   height: 10,
@@ -110,7 +97,7 @@ class doctor_detail_page extends StatelessWidget {
                                     Icons.location_on,
                                     color: colors.k_orange,
                                   ),
-                                  text: address,
+                                  text: doctor?.address,
                                 ),
                               ],
                             ),
@@ -122,15 +109,16 @@ class doctor_detail_page extends StatelessWidget {
                   SizedBox(
                     height: 5,
                   ),
-                  Container(
-                    width: MediaQuery.of(context).size.width,
-                    height: MediaQuery.of(context).size.height * 0.2,
-                    color: colors.white,
-                    child: ListView(
-                      scrollDirection: Axis.horizontal,
-                      children: new List.generate(
-                          5,
-                          (index) => GestureDetector(
+                  SingleChildScrollView(
+                    child: Expanded(
+                      child: Container(
+                        width: MediaQuery.of(context).size.width,
+                        height: MediaQuery.of(context).size.height * 0.2,
+                        color: colors.white,
+                        child: ListView(
+                            scrollDirection: Axis.horizontal,
+                            children: [
+                              GestureDetector(
                                 onTap: () {},
                                 child: Container(
                                     margin: EdgeInsets.only(
@@ -151,55 +139,61 @@ class doctor_detail_page extends StatelessWidget {
                                           MainAxisAlignment.start,
                                       children: [
                                         Label1(text: 'CV'),
-                                        Image(
-                                          image: AssetImage(
-                                              'assets/images/CV.jpg'),
-                                          fit: BoxFit.fill,
-                                          width:
-                                              MediaQuery.of(context).size.width,
-                                          height: MediaQuery.of(context)
-                                                  .size
-                                                  .height /
-                                              6.5,
+                                        Expanded(
+                                          child: Image(
+                                            image: NetworkImage(doctor.cv),
+                                            fit: BoxFit.fill,
+                                            width: MediaQuery.of(context)
+                                                .size
+                                                .width,
+                                            height: MediaQuery.of(context)
+                                                    .size
+                                                    .height /
+                                                6.5,
+                                          ),
                                         )
                                       ],
                                     )),
-                              )),
+                              )
+                            ]),
+                      ),
                     ),
                   ),
                   SizedBox(
                     height: 30,
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      btnCustom(
-                        text: 'Message',
-                        color: colors.primarygreenColor,
-                        textcolor: colors.white,
-                        onpress: () {
-                          Navigator.push(
-                              context, createRoute(admin_normal_message()));
-                        },
-                      ),
-                      btnCustom(
-                        text: 'Warning',
-                        color: colors.secondarypurpleColor,
-                        textcolor: colors.white,
-                        onpress: () {
-                          Navigator.push(
-                              context, createRoute(admin_warning_message()));
-                        },
-                      ),
-                      btnCustom(
-                        text: 'Block',
-                        color: colors.k_red,
-                        textcolor: colors.white,
-                        onpress: () {
-                          showAlertDialog(context);
-                        },
-                      ),
-                    ],
+                  Expanded(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        btnCustom(
+                          text: 'Message',
+                          color: colors.primarygreenColor,
+                          textcolor: colors.white,
+                          onpress: () {
+                            Navigator.push(
+                                context, createRoute(admin_normal_message()));
+                          },
+                        ),
+                        btnCustom(
+                          text: 'Warning',
+                          color: colors.secondarypurpleColor,
+                          textcolor: colors.white,
+                          onpress: () {
+                            Navigator.push(
+                                context, createRoute(admin_warning_message()));
+                          },
+                        ),
+                        btnCustom(
+                          text: 'Block',
+                          color: colors.k_red,
+                          textcolor: colors.white,
+                          onpress: () {
+                            showAlertDialog(context);
+                          },
+                        ),
+                      ],
+                    ),
                   )
                 ],
               ),

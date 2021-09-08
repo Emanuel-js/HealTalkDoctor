@@ -9,7 +9,7 @@ class MessageApi {
   Future uploadMessage(String uId, String ownerId, String message, String url,
       String name) async {
     final refMessages =
-        FirebaseFirestore.instance.collection('chats/$uId/messages');
+        FirebaseFirestore.instance.collection('chats/$ownerId/messages');
 
     final newMessage = Message(
       ownerId: ownerId,
@@ -19,7 +19,7 @@ class MessageApi {
       message: message,
       createdAt: DateTime.now(),
     );
-    await refMessages.doc(ownerId).collection("chat").add(newMessage.toJson());
+    await refMessages.doc(uId).collection("chat").add(newMessage.toJson());
 
     await patientCollection
         .doc(uId)

@@ -21,7 +21,7 @@ class admin_more_screen extends StatelessWidget {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (BuildContext context) => admin_notification()));
+                      builder: (BuildContext context) => AdminNotification()));
             },
           ),
         ],
