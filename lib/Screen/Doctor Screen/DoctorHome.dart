@@ -19,10 +19,18 @@ class _DoctorHomePageState extends State<DoctorHomePage> {
     final data = Provider.of<Doctor>(context);
     double sum = 0;
     double rate = 0;
+    bool isnotify = false;
+    if (data?.requtSender?.length > 0) {
+      setState(() {
+        isnotify = true;
+      });
+    } else {
+      isnotify = false;
+    }
     data?.rate?.forEach((element) {
       setState(() {
         sum += element;
-        rate = (sum) / (data?.rate?.length + 5);
+        rate = (sum) / (data?.rate?.length);
       });
     });
     return Scaffold(
@@ -34,7 +42,7 @@ class _DoctorHomePageState extends State<DoctorHomePage> {
           IconButton(
               icon: Icon(
                 Icons.notifications_none,
-                color: colors.darkblue,
+                color: isnotify == false ? colors.darkblue : colors.redColor,
               ),
               onPressed: () {
                 Navigator.push(
@@ -67,7 +75,7 @@ class _DoctorHomePageState extends State<DoctorHomePage> {
                   Homedoctorcontainer(
                     text: 'Active Clients',
                     color: colors.secondarypurpleColor,
-                    display: '0',
+                    display: 'N/A',
                   ),
                   SizedBox(
                     width: 20,
@@ -75,7 +83,7 @@ class _DoctorHomePageState extends State<DoctorHomePage> {
                   Homedoctorcontainer(
                     text: 'Treated Clients',
                     color: colors.lightblue,
-                    display: '0',
+                    display: 'N/A',
                   ),
                 ],
               ),
@@ -94,9 +102,9 @@ class _DoctorHomePageState extends State<DoctorHomePage> {
                     width: 20,
                   ),
                   Homedoctorcontainer(
-                    text: 'Treated Clients',
+                    text: 'Daily Clients',
                     color: colors.darkblue,
-                    display: '0',
+                    display: 'N/A',
                   ),
                 ],
               ),
@@ -365,9 +373,7 @@ class DoctorNotification extends StatelessWidget {
                     //Todo  navigot to message
                     RequestApi().updateClinte(true, patient.pId);
                     Navigator.pushReplacement(
-                        context,
-                        createRoute(ChatPage(
-                            patient: patient, isaccepted: isaccepted)));
+                        context, createRoute(ChatPage(patient: patient)));
                   }
 
                   // Swiping in left direction.

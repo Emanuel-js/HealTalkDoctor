@@ -12,7 +12,7 @@ class ChatBodyWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // final info = Provider.of<Request>(context);
+    final info = Provider.of<Doctor>(context);
     return Expanded(
       child: Scaffold(
         resizeToAvoidBottomInset: false,
@@ -56,64 +56,59 @@ class ChatBodyWidget extends StatelessWidget {
         body: SingleChildScrollView(
           physics: BouncingScrollPhysics(),
           child: Container(
-            padding: EdgeInsets.all(10),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(25),
-                topRight: Radius.circular(25),
+              padding: EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(25),
+                  topRight: Radius.circular(25),
+                ),
               ),
-            ),
-            child: Container(
-              child: Column(
-                children: [buildChats(context)],
-              ),
-            ),
-          ),
+              child: ListView.builder(
+                  shrinkWrap: true,
+                  physics: NeverScrollableScrollPhysics(),
+                  itemCount: info?.requtSender?.length,
+                  itemBuilder: (ctx, index) {
+                    return buildChats(context, info?.requtSender[index]);
+                  })),
         ),
       ),
     );
   }
 
-  Widget buildChats(context) {
-    //final data = Provider.of<Doctor>(context);
-
-    return Container(
-      child: ListView.builder(
-        physics: NeverScrollableScrollPhysics(),
-        shrinkWrap: true,
-        itemCount: users?.length,
-        itemBuilder: (context, index) {
-          final user = users[index];
-
-          return Align(
-            alignment: Alignment.center,
-            child: Container(
-              color: colors.bkColor,
-              margin: EdgeInsets.only(top: 10),
-              height: 75,
-              child: ListTile(
-                onTap: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => ChatPage(patient: user),
-                  ));
-                },
-                leading: Hero(
-                  tag: "${user.pId}",
-                  child: CircleAvatar(
-                    radius: 25,
-                    backgroundImage: user.isanonymous
-                        ? NetworkImage("https://i.pravatar.cc/300")
-                        : NetworkImage(user?.picture),
-                  ),
+  Widget buildChats(context, id) {
+    return StreamBuilder<Patient>(
+      stream: PatientApi().patientlist(id['senderID']),
+      builder: (ctx, snapshot) {
+        if (!snapshot.hasData) return Text("");
+        final user = snapshot.data;
+        return Align(
+          alignment: Alignment.center,
+          child: Container(
+            color: colors.bkColor,
+            margin: EdgeInsets.only(top: 10),
+            height: 75,
+            child: ListTile(
+              onTap: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => ChatPage(patient: user),
+                ));
+              },
+              leading: Hero(
+                tag: "${user.pId}",
+                child: CircleAvatar(
+                  radius: 25,
+                  backgroundImage: user.isanonymous
+                      ? NetworkImage("https://i.pravatar.cc/300")
+                      : NetworkImage(user?.picture),
                 ),
-                title:
-                    user.isanonymous ? Text("anonymous") : Text(user.firstName),
               ),
+              title:
+                  user.isanonymous ? Text("anonymous") : Text(user.firstName),
             ),
-          );
-        },
-      ),
+          ),
+        );
+      },
     );
   }
 }

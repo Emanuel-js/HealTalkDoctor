@@ -7,6 +7,21 @@ class PatientApi {
   final _auth = FirebaseAuth.instance;
   static final CollectionReference patientCollection =
       FirebaseFirestore.instance.collection('Patient');
+  static final CollectionReference reportCollection =
+      FirebaseFirestore.instance.collection('Report');
+
+  List<Report> _getreport(QuerySnapshot snapshot) {
+    return snapshot.docs.map((json) {
+      return Report(
+          senderId: json["senderId"],
+          report: json['report'],
+          doctorId: json['doctorId'],
+          createdDate: json['createdDate']);
+    }).toList();
+  }
+
+  Stream<List<Report>> get getreport =>
+      reportCollection.snapshots().map(_getreport);
 
   Patient _getSinglePatient(DocumentSnapshot snapshot) {
     return Patient().fromJson(snapshot.data());
@@ -44,19 +59,6 @@ class PatientApi {
       .orderBy('createdDate')
       .snapshots()
       .map(_getlistOfPatient);
-
-  //get a list of requested patient
-
-  // Future<List<Patient>> fetchAllMembers(List membersIDS) async {
-  //   /// With whereIn
-  //   var result =
-  //       await patientCollection.where('pId', whereIn: membersIDS).get();
-  //   var documents =
-  //       result.docs.map((doc) => Patient().fromJson(doc.data())).toList();
-
-  //   print(documents);
-  //   return documents;
-  // }
 
   Stream<Patient> getptentbyId(requtSender) {
     return requtSender.forEach((element) {

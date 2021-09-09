@@ -7,8 +7,8 @@ class AdminHomeScreen extends StatelessWidget {
     final doctor = Provider.of<List<Doctor>>(context);
     final patient = Provider.of<List<Patient>>(context);
     Map<String, double> usersdataMap = {
-      "Doctors": doctor?.length.toDouble(),
-      "Patients": patient?.length.toDouble(),
+      "Doctors": doctor?.length?.toDouble(),
+      "Patients": patient?.length?.toDouble(),
       // "Admins": userslist[0].admins,
     };
 

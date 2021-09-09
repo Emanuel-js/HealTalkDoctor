@@ -39,6 +39,10 @@ class HealTalk extends StatelessWidget {
           create: (_) => FirebaseApi().doctor,
           initialData: null,
         ),
+        StreamProvider<List<Report>>(
+          create: (_) => PatientApi().getreport,
+          initialData: null,
+        ),
         StreamProvider<Other>(
           create: (_) => RequestApi().getOters,
           initialData: null,

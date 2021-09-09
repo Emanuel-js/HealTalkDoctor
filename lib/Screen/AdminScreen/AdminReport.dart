@@ -1,11 +1,11 @@
 import 'package:heal_talk_doctor/index.dart';
 
-class admin_report_screen extends StatefulWidget {
+class AdminReportScreen extends StatefulWidget {
   @override
-  _admin_report_screenState createState() => _admin_report_screenState();
+  _AdminReportScreenState createState() => _AdminReportScreenState();
 }
 
-class _admin_report_screenState extends State<admin_report_screen> {
+class _AdminReportScreenState extends State<AdminReportScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(

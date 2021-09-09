@@ -10,7 +10,7 @@ class _AdminNotificationState extends State<AdminNotification> {
   int _currentIndex = 0;
   final List<Widget> _children = [
     AdminNewdoctorsScreen(),
-    admin_report_screen(),
+    AdminReportScreen(),
     admin_feedback_screen(),
   ];
   void onTabTapped(int index) {

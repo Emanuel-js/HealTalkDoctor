@@ -5,9 +5,10 @@ import 'package:heal_talk_doctor/index.dart';
 
 class ChatPage extends StatefulWidget {
   final Patient patient;
-
+  final isaccepted;
   const ChatPage({
     @required this.patient,
+    this.isaccepted,
     Key key,
   }) : super(key: key);
 
@@ -52,13 +53,6 @@ class _ChatPageState extends State<ChatPage> {
               ),
             ),
           ),
-          Container(
-              child: IconButton(
-                  icon: Icon(
-                    Icons.phone,
-                    color: colors.primarypurpleColor,
-                  ),
-                  onPressed: () {})),
           PopupMenuButton<Menus>(
             onSelected: (Menus result) {
               // setState(() {
@@ -83,15 +77,6 @@ class _ChatPageState extends State<ChatPage> {
                     onTap: () =>
                         Navigator.push(context, createRoute(PatientSchedule())),
                     child: Text('schedule'),
-                  ),
-                ),
-              ),
-              PopupMenuItem<Menus>(
-                value: Menus.end_sessions,
-                child: Container(
-                  child: GestureDetector(
-                    onTap: () => endSessions(),
-                    child: Text('End Session'),
                   ),
                 ),
               ),
